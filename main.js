@@ -30,17 +30,25 @@ app.post('/action-endpoint', function (req, res) {
     const [multiplier, currency] = req.body.event.text.split(" ");
   
     request.get(`https://api.coindesk.com/v1/bpi/currentprice/${currency.toUpperCase()}.json`, function(err, res, body) {
+      let responseText;
       if (err) {
         console.log(err);
       }
       else {
-        const coindesk = JSON.parse(body);
-        const rate = coindesk.bpi[currency.toUpperCase()].rate.replace(",", "");
-        
+        try{
+          const coindesk = JSON.parse(body);
+          const rate = coindesk.bpi[currency.toUpperCase()].rate.replace(",", "");
+          responseText = `Current BTC rate: ${rate*multiplier} ${currency.toUpperCase()} per ${multiplier} BTC`
+          
+        }
+        catch(err){
+          responseText = "Invalid input";
+        }
         const reply = {
           'channel': req.body.event.channel,
-          text: `Current BTC rate: ${rate*multiplier} ${currency.toUpperCase()} per ${multiplier} BTC`
+          text: responseText 
         }
+        
 
         const options = {
           url:   'https://slack.com/api/chat.postMessage',
