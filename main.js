@@ -27,17 +27,19 @@ app.post('/action-endpoint', function (req, res) {
   // console.log(req.body.event);
 
   if (req.body.event.subtype != 'bot_message') { // se we won't reply to ourselves...
-    request.get('https://api.coindesk.com/v1/bpi/currentprice/USD.json', function(err, res, body) {
+    const [multiplier, currency] = req.body.event.text.split(" ");
+  
+    request.get(`https://api.coindesk.com/v1/bpi/currentprice/${currency.toUpperCase()}.json`, function(err, res, body) {
       if (err) {
         console.log(err);
       }
       else {
         const coindesk = JSON.parse(body);
-        const rate = coindesk.bpi.USD.rate.replace(",", "");
-        const multiplier = req.body.event.text;
+        const rate = coindesk.bpi[currency.toUpperCase()].rate.replace(",", "");
+        
         const reply = {
           'channel': req.body.event.channel,
-          text: `Current BTC rate: ${rate*multiplier} USD per ${multiplier} BTC`
+          text: `Current BTC rate: ${rate*multiplier} ${currency.toUpperCase()} per ${multiplier} BTC`
         }
 
         const options = {
