@@ -20,10 +20,6 @@ app.post('/action-endpoint', function (req, res) {
 });
 
 
-const listener = app.listen(process.env.PORT || '3000', function () {
-  console.log('Your app is listening on port ' + listener.address().port);
-});
-
 app.post('/action-endpoint', function (req, res) {
   const challenge = req.body.challenge; // this challenge is needed to ensure slack that our bot works
   
@@ -69,4 +65,8 @@ app.post('/action-endpoint', function (req, res) {
     });
   }
   res.json(reply);
+});
+
+const listener = app.listen(process.env.PORT || '3000', function () {
+  console.log('Your app is listening on port ' + listener.address().port);
 });
