@@ -33,11 +33,11 @@ app.post('/action-endpoint', function (req, res) {
       }
       else {
         const coindesk = JSON.parse(body);
-        const rate = coindesk.bpi.EUR.rate;
+        const rate = coindesk.bpi.EUR.rate.replace(",", "");
         const multiplier = req.body.event.text;
         const reply = {
           'channel': req.body.event.channel,
-          text: `Current BTC rate: ${rate} EUR per ${multiplier} BTC`
+          text: `Current BTC rate: ${rate*multiplier} EUR per ${multiplier} BTC`
         }
 
         const options = {
